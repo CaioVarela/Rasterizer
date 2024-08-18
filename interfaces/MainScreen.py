@@ -9,30 +9,27 @@ class MainScreen:
         self.root = root
         self.root.title("Rasterizador - Home")
         
-        # Definindo o tamanho da janela principal
-        self.root.geometry("600x400")  # Largura x Altura
+        self.root.geometry("400x200")
         
-        # Botão para Rasterização de Retas
-        self.line_button = ttk.Button(root, text="Rasterizar Retas", command=self.open_line_drawer, width=30)
-        self.line_button.pack(padx=20, pady=20, fill=tk.X)
+        self.lineButton = ttk.Button(root, text="Retas", command=self.OpenLineWindow, width=30)
+        self.lineButton.pack(padx=20, pady=20, fill=tk.X)
 
-        # Botão para Rasterização de Polígonos
-        self.polygon_button = ttk.Button(root, text="Rasterizar Polígonos", command=self.open_polygon_drawer, width=30)
-        self.polygon_button.pack(padx=20, pady=20, fill=tk.X)
+        self.curveButton = ttk.Button(root, text="Curvas", command=self.OpenCurveWindow, width=30)
+        self.curveButton.pack(padx=20, pady=20, fill=tk.X)
 
-        # Botão para Rasterização de Curvas
-        self.curve_button = ttk.Button(root, text="Rasterizar Curvas", command=self.open_curve_drawer, width=30)
-        self.curve_button.pack(padx=20, pady=20, fill=tk.X)
+        self.polygonButton = ttk.Button(root, text="Polígonos", command=self.OpenPolygonWindow, width=30)
+        self.polygonButton.pack(padx=20, pady=20, fill=tk.X)
+
         pass
 
-    def open_line_drawer(self):
-        line_window = tk.Toplevel(self.root)
-        LineInterface(line_window)
+    def OpenLineWindow(self):
+        lineWindow = tk.Toplevel(self.root)
+        LineInterface(lineWindow)
 
-    def open_polygon_drawer(self):
-        polygon_window = tk.Toplevel(self.root)
-        PolygonInterface(polygon_window)
+    def OpenPolygonWindow(self):
+        polygonWindow = tk.Toplevel(self.root)
+        PolygonInterface(polygonWindow)
 
-    def open_curve_drawer(self):
-        curve_window = tk.Toplevel(self.root)
-        HermiteCurveInterface(curve_window)
+    def OpenCurveWindow(self):
+        curveWindow = tk.Toplevel(self.root)
+        HermiteCurveInterface(curveWindow)

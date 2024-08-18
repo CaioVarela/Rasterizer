@@ -7,114 +7,106 @@ from services.HermiteCurveService import Point, HermiteCurveService
 class HermiteCurveInterface:
     def __init__(self, root):
         self.root = root
-        self.root.title("Curva de Hermite")
+        self.root.title("Rasterizador - Curva de Hermite")
 
-        # Configuração da figura e eixos para gráficos
         self.figure, (self.ax1) = plt.subplots(1, figsize=(12, 6))
         self.canvas = FigureCanvasTkAgg(self.figure, master=self.root)
         self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
-        self.pontos_entries = []
-        self.tangentes_entries = []
+        self.entryPoints = []
+        self.entryTangents = []
 
-        self.create_widgets()
-        self.update_plots()
+        self.CreateInterface()
+        self.UpdateGraphics()
         pass
 
-    def create_widgets(self):
-        self.control_frame = ttk.Frame(self.root)
-        self.control_frame.pack(side=tk.BOTTOM, fill=tk.X)
+    def CreateInterface(self):
+        self.frameControl = ttk.Frame(self.root)
+        self.frameControl.pack(side=tk.BOTTOM, fill=tk.X)
 
-        # Layout de entrada para pontos e tangentes
-        self.ponto_frame = tk.LabelFrame(self.control_frame, text="Pontos e Tangentes", padx=10, pady=10)
-        self.ponto_frame.grid(row=0, column=0, columnspan=4, padx=10, pady=10)
+        self.framePoint = tk.Frame(self.frameControl, padx=10, pady=10)
+        self.framePoint.grid(row=1, column=0, columnspan=4, padx=10)
 
-        # Adicionar entradas iniciais
-        self.add_entry_row()
+        self.AddEntryRow()
 
-        tk.Button(self.control_frame, text="Adicionar Ponto/Tangente", command=self.add_entry_row).grid(row=1, column=0, columnspan=4, pady=5)
+        ttk.Button(self.frameControl, text="Adicionar Ponto e Tangente", command=self.AddEntryRow).grid(row=0, column=0, columnspan=4, pady=15)
 
-        # Resolução
-        tk.Label(self.control_frame, text="Resolução").grid(row=2, column=0, padx=10, pady=5)
-        self.resolution_var = tk.StringVar(value="100x100")
-        resolutions = ["100x100", "300x300", "800x600", "1920x1080"]
-        resolution_menu = ttk.Combobox(self.control_frame, textvariable=self.resolution_var, values=resolutions)
-        resolution_menu.grid(row=2, column=1, padx=5, pady=5)
+        tk.Label(self.frameControl, text="Resolução").grid(row=2, column=0, padx=10, pady=5)
+        self.resolution = tk.StringVar(value="100x100")
+        resolutionOptions = ["100x100", "300x300", "800x600", "1920x1080"]
+        resolutionCombobox = ttk.Combobox(self.frameControl, textvariable=self.resolution, values=resolutionOptions)
+        resolutionCombobox.grid(row=2, column=1, padx=5, pady=5)
 
-        # Quantidade de segmentos
-        tk.Label(self.control_frame, text="Quantidade de Segmentos").grid(row=2, column=2, padx=10, pady=5)
-        self.num_segments_var = tk.IntVar(value=3)
-        tk.Spinbox(self.control_frame, from_=1, to_=100, textvariable=self.num_segments_var).grid(row=2, column=3, padx=5, pady=5)
+        tk.Label(self.frameControl, text="Quantidade de Segmentos de Retas").grid(row=2, column=2, padx=10, pady=5)
+        self.segmentsCount = tk.IntVar(value=3)
+        tk.Spinbox(self.frameControl, from_=1, to_=100, textvariable=self.segmentsCount).grid(row=2, column=3, padx=5, pady=5)
 
-        # Botão de Plotar
-        tk.Button(self.control_frame, text="Plotar Curva", command=self.curveDrawer).grid(row=3, column=0, columnspan=4, pady=10)
+        ttk.Button(self.frameControl, text="Gerar Curva", command=self.CurveDrawer).grid(row=2, column=4, columnspan=4, padx=10,pady=10)
 
-    def add_entry_row(self):
-        row_count = len(self.pontos_entries)
+    def AddEntryRow(self):
+        columnCount = len(self.entryPoints)
 
-        # Adicionar linha para pontos
-        x_entry = tk.Entry(self.ponto_frame, width=10)
-        y_entry = tk.Entry(self.ponto_frame, width=10)
-        tk.Label(self.ponto_frame, text=f"Ponto {row_count + 1} (x, y)").grid(row=row_count, column=0, padx=5, pady=5)
-        x_entry.grid(row=row_count, column=1, padx=5, pady=5)
-        y_entry.grid(row=row_count, column=2, padx=5, pady=5)
-        self.pontos_entries.append((x_entry, y_entry))
+        xPoint = tk.Entry(self.framePoint, width=10)
+        yPoint = tk.Entry(self.framePoint, width=10)
+        tk.Label(self.framePoint, text=f"Ponto {columnCount + 1} (x, y)").grid(row=1, column=columnCount*3, padx=5, pady=5)
+        xPoint.grid(row=1, column=(columnCount*3)+1, padx=5, pady=5)
+        yPoint.grid(row=1, column=(columnCount*3)+2, padx=5, pady=5)
+        self.entryPoints.append((xPoint, yPoint))
 
-        # Adicionar linha para tangentes
-        x_entry_t = tk.Entry(self.ponto_frame, width=10)
-        y_entry_t = tk.Entry(self.ponto_frame, width=10)
-        tk.Label(self.ponto_frame, text=f"Tangente {row_count + 1} (x, y)").grid(row=row_count, column=3, padx=5, pady=5)
-        x_entry_t.grid(row=row_count, column=4, padx=5, pady=5)
-        y_entry_t.grid(row=row_count, column=5, padx=5, pady=5)
-        self.tangentes_entries.append((x_entry_t, y_entry_t))
+        txPoint = tk.Entry(self.framePoint, width=10)
+        tyPoint = tk.Entry(self.framePoint, width=10)
+        tk.Label(self.framePoint, text=f"Tangente {columnCount + 1} (x, y)").grid(row=2, column=columnCount*3, padx=5, pady=5)
+        txPoint.grid(row=2, column=(columnCount*3)+1, padx=5, pady=5)
+        tyPoint.grid(row=2, column=(columnCount*3)+2, padx=5, pady=5)
+        self.entryTangents.append((txPoint, tyPoint))
 
-    def validar_entrada(self):
-        pontos = []
-        tangentes = []
+    def EntryValidation(self):
+        points = []
+        tangents = []
 
         try:
-            for (x_entry, y_entry) in self.pontos_entries:
-                x = x_entry.get().strip()
-                y = y_entry.get().strip()
+            for (xPoint, yPoint) in self.entryPoints:
+                x = xPoint.get().strip()
+                y = yPoint.get().strip()
                 if x and y:
                     x = float(x)
                     y = float(y)
                     if not (-1 <= x <= 1 and -1 <= y <= 1):
-                        raise ValueError(f"Os valores devem estar no intervalo [-1, 1].")
-                    pontos.append(Point(x, y))
+                        raise ValueError(f"Os Pontos devem estar entre [-1, 1].")
+                    points.append(Point(x, y))
 
-            for (x_entry, y_entry) in self.tangentes_entries:
-                x = x_entry.get().strip()
-                y = y_entry.get().strip()
+            for (txPoint, tyPoint) in self.entryTangents:
+                x = txPoint.get().strip()
+                y = tyPoint.get().strip()
                 if x and y:
                     x = float(x)
                     y = float(y)
                     if not (-1 <= x <= 1 and -1 <= y <= 1):
-                        raise ValueError(f"Os valores devem estar no intervalo [-1, 1].")
-                    tangentes.append(Point(x, y))
+                        raise ValueError(f"As Tangentes devem estar entre [-1, 1].")
+                    tangents.append(Point(x, y))
 
-            return pontos, tangentes
+            return points, tangents
         except ValueError as e:
-            messagebox.showerror("Erro", f"Dados inválidos: {e}")
+            messagebox.showerror("Erro", f"Dados Inválidos: {e}")
             return None, None
 
-    def curveDrawer(self):
-        pontos, tangentes = self.validar_entrada()
-        if pontos is None or tangentes is None:
+    def CurveDrawer(self):
+        points, tangents = self.EntryValidation()
+        if points is None or tangents is None:
             return
 
         try:
-            resolution_str = self.resolution_var.get()
-            resolution = tuple(map(int, resolution_str.split("x")))
-            num_segments = self.num_segments_var.get()
+            resolutionString = self.resolution.get()
+            resolution = tuple(map(int, resolutionString.split("x")))
+            segmentsCount = self.segmentsCount.get()
 
-            curva = HermiteCurveService(pontos, tangentes)
+            curve = HermiteCurveService(points, tangents)
             self.ax1.clear()
-            curva.curveDrawer(num_segments=num_segments, resolution=resolution, ax1=self.ax1)
+            curve.CurveDrawer(segmentsCount=segmentsCount, resolution=resolution, ax1=self.ax1)
             self.canvas.draw()
         except ValueError as e:
             messagebox.showerror("Erro", f"Dados inválidos: {e}")
 
-    def update_plots(self):
+    def UpdateGraphics(self):
         self.ax1.clear()
         self.canvas.draw()
