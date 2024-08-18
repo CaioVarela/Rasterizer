@@ -47,6 +47,10 @@ class PolygonInterface:
         rotationOptions = ['0° Graus', '30° Graus', '45° Graus', '60° Graus', '90° Graus', '120° Graus', '180° Graus', '270° Graus', '360° Graus']
         rotationCombobox = ttk.Combobox(self.frameControl, textvariable=self.rotation, values=rotationOptions)
         rotationCombobox.grid(row=0, column=5, padx=5, pady=5)
+
+        self.isCleanable = tk.BooleanVar(value=False)
+        ttk.Checkbutton(self.frameControl, text="Limpar tela ao plotar outra figura?", variable=self.isCleanable).grid(row=0, column=4, padx=10, pady=5)
+         
         
         showPolygonButton = ttk.Button(self.frameControl, text="Mostrar Polígono", command=self.UpdateGraphics)
         showPolygonButton.grid(row=0, column=6, columnspan=2, padx=10, pady=5)
