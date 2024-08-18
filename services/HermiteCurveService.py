@@ -13,7 +13,8 @@ class HermiteCurveService:
         self.tangents = tangents
 
     def CurveCalculator(self, pointsCount, p1, t1, p2, t2):
-        t = np.linspace(0, 1, pointsCount)
+        t = np.linspace(0, 1, pointsCount + 1)
+
         h00 = 2 * t**3 - 3 * t**2 + 1
         h01 = -2 * t**3 + 3 * t**2
         h10 = t**3 - 2 * t**2 + t
@@ -85,8 +86,8 @@ class HermiteCurveService:
 
         return [Point(x, y) for x, y in tangents]
 
-    def CurveDrawer(self, segmentsCount, resolution, ax1):
-        pointsCount = segmentsCount * 10 + 1
+    def CurveDrawer(self, segmentsCount, resolution, axis):
+        pointsCount = segmentsCount
 
         if len(self.points) < 2:
             print("Adicione mais pontos para gerar a curva.")
@@ -108,10 +109,10 @@ class HermiteCurveService:
                     if 0 <= int(round(py)) < height and 0 <= int(round(px)) < width:
                         imageCombined[int(round(py)), int(round(px))] = 1
 
-        ax1.clear()
-        ax1.imshow(imageCombined, cmap='Reds', origin='lower')
-        ax1.set_title("Curva(s) de Hermite Rasterizada(s)")
-        ax1.set_xlim(0, width)
-        ax1.set_ylim(0, height)
-        ax1.set_aspect('equal', adjustable='box')
-        ax1.grid(True)
+        axis.clear()
+        axis.imshow(imageCombined, cmap='Reds', origin='lower')
+        axis.set_title("Curva(s) de Hermite Rasterizada(s)")
+        axis.set_xlim(0, width)
+        axis.set_ylim(0, height)
+        axis.set_aspect('equal', adjustable='box')
+        axis.grid(True)

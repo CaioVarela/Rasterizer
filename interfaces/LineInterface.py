@@ -88,7 +88,7 @@ class LineInterface:
 
         self.axis.clear()
         self.axis.imshow(rasterizedImage, cmap='Reds', origin='lower')
-        self.axis.set_title('Rasterização da(s) Reta(s)')
+        self.axis.set_title('Reta(s) Rasterizada(s)')
         
         self.canvas.draw()
         

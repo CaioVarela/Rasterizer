@@ -9,7 +9,7 @@ class HermiteCurveInterface:
         self.root = root
         self.root.title("Rasterizador - Curva de Hermite")
 
-        self.figure, (self.ax1) = plt.subplots(1, figsize=(12, 6))
+        self.figure, (self.axis) = plt.subplots(1, figsize=(12, 6))
         self.canvas = FigureCanvasTkAgg(self.figure, master=self.root)
         self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
@@ -101,12 +101,12 @@ class HermiteCurveInterface:
             segmentsCount = self.segmentsCount.get()
 
             curve = HermiteCurveService(points, tangents)
-            self.ax1.clear()
-            curve.CurveDrawer(segmentsCount=segmentsCount, resolution=resolution, ax1=self.ax1)
+            self.axis.clear()
+            curve.CurveDrawer(segmentsCount=segmentsCount, resolution=resolution, axis=self.axis)
             self.canvas.draw()
         except ValueError as e:
             messagebox.showerror("Erro", f"Dados inválidos: {e}")
 
     def UpdateGraphics(self):
-        self.ax1.clear()
+        self.axis.clear()
         self.canvas.draw()

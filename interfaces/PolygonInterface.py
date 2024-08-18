@@ -48,8 +48,9 @@ class PolygonInterface:
         rotationCombobox = ttk.Combobox(self.frameControl, textvariable=self.rotation, values=rotationOptions)
         rotationCombobox.grid(row=0, column=5, padx=5, pady=5)
 
-        self.isCleanable = tk.BooleanVar(value=False)
-        ttk.Checkbutton(self.frameControl, text="Limpar tela ao plotar outra figura?", variable=self.isCleanable).grid(row=0, column=4, padx=10, pady=5)
+        self.previousSegments = []
+        self.isCleanable = tk.BooleanVar(value=True)
+        ttk.Checkbutton(self.frameControl, text="Limpar após gerar?", variable=self.isCleanable).grid(row=0, column=4, padx=10, pady=5)
          
         
         showPolygonButton = ttk.Button(self.frameControl, text="Mostrar Polígono", command=self.UpdateGraphics)
@@ -64,10 +65,16 @@ class PolygonInterface:
         shape = self.polygonShape.get()
         rotation = PolygonServices.GetRotationByLabel(self.rotation.get())
         segments = PolygonServices.GetPolygonSegments(shape, rotation)
-        rasterizedImage = RasterizeImage(segments, *self.currentResolution)
+
+        if (self.isCleanable.get() == False):
+            self.previousSegments = segments + self.previousSegments
+        else: self.previousSegments = []
+        
+        rasterizedImage = RasterizeImage(segments + self.previousSegments, *self.currentResolution)
+
         
         self.axis.imshow(rasterizedImage, cmap='Reds', origin='lower')
-        self.axis.set_title(f"{shape} ({selectedResolution})")
+        self.axis.set_title(f"Polígono(s) Rasterizado(s)")
         self.axis.axis('on')
         
         self.canvas.draw()
