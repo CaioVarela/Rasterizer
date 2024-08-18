@@ -5,7 +5,7 @@ def NormalizePoint(x, y, minX, maxX, minY, maxY):
     normalizedY = 2 * (y - minY) / (maxY - minY) - 1
     return normalizedX, normalizedY
 
-def Rasterize_line(firstX, firstY, secondX, secondY, width, height):
+def RasterizeLine(firstX, firstY, secondX, secondY, width, height):
     firstX, firstY = NormalizePoint(firstX, firstY, -1, 1, -1, 1)
     secondX, secondY = NormalizePoint(secondX, secondY, -1, 1, -1, 1)
     
@@ -44,7 +44,7 @@ def RasterizeImage(segments, width, height):
     imageCombined = np.zeros((height, width), dtype=np.uint8)
 
     for (firstX, firstY), (secondX, secondY) in segments:
-        image = Rasterize_line(firstX, firstY, secondX, secondY, width, height)
+        image = RasterizeLine(firstX, firstY, secondX, secondY, width, height)
         imageCombined = np.maximum(imageCombined, image)
         
     return imageCombined

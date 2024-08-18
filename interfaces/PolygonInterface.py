@@ -60,7 +60,6 @@ class PolygonInterface:
 
         selectedResolution = self.resolution.get()
         self.currentResolution = self.resolutions[selectedResolution]
-        width, height = self.currentResolution
 
         shape = self.polygonShape.get()
         rotation = PolygonServices.GetRotationByLabel(self.rotation.get())
@@ -69,8 +68,6 @@ class PolygonInterface:
         
         self.axis.imshow(rasterizedImage, cmap='Reds', origin='lower')
         self.axis.set_title(f"{shape} ({selectedResolution})")
-        self.axis.set_xlabel(f'X (0 to {width})')
-        self.axis.set_ylabel(f'Y (0 to {height})')
         self.axis.axis('on')
         
         self.canvas.draw()
